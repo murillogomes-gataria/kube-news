@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kubenews
+  name: kubenews
+  namespace: news
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubenews
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kubenews
+    spec:
+      containers:
+        - name: kubenews
+          image: mganalistati/kubenews-config-map:v1
+          imagePullPolicy: Always
+          env:
+            - name: DB_USERNAME 
+              value: mgstec
+            - name: DB_PASSWORD
+              value: passw0rd*2024
+            - name: DB_DATABASE
+              value: mgstec
+            - name: DB_HOST
+              value: postgres.dbnews.svc.cluster.local
+          ports:
+            - name: news-port 
+              containerPort: 8080
+              protocol: TCP
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubenews
+  name: kubenews
+  namespace: news
+spec:
+  selector:
+    app: kubenews
+  ports:
+  - port: 8080
+    name: news
+    protocol: TCP
+  type: ClusterIP

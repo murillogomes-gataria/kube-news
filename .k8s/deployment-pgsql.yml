@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: dbnews
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15.7-alpine3.20
+          imagePullPolicy: Always
+          # envFrom:
+          #   - configMapRef:
+          #       name: postgres
+          ##
+          # env:
+          #   - name: POSTGRES_USER
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: postgres
+          #         key: postgres_user
+          #   - name: POSTGRES_PASSWORD
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: postgres
+          #         key: postgres_password
+          #   - name: POSTGRES_DB
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: postgres
+          #         key: postgres_db 
+          envFrom:
+            - secretRef:
+                name: postgres
+          ports:
+            - name: pgsql-port 
+              containerPort: 5432
+              protocol: TCP
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: dbnews
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    name: pgsql
+    protocol: TCP
+  type: ClusterIP

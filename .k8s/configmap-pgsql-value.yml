@@ -1,0 +1,31 @@
+# Em casos de poucas configurações, podemos passar os valores das variáveis no manifesto como referência a keys do configMap ao invés de passar o configMap como referência;
+# Assim o nome das keys não precisam ter o mesno nome da variável esperada pela aplicação;
+
+# env:
+#   - name: POSTGRES_USER
+#     valueFrom:
+#       configMapKeyRef:
+#         name: postgres
+#         key: postgres_user
+#   - name: POSTGRES_PASSWORD
+#     valueFrom:
+#       configMapKeyRef:
+#         name: postgres
+#         key: postgres_password
+#   - name: POSTGRES_DB
+#     valueFrom:
+#       configMapKeyRef:
+#         name: postgres
+#         key: postgres_db
+
+apiVersion: v1
+data:
+  postgres_password: passw0rd*2024
+  postgres_user: mgstec
+  postgres_db: mgstec
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: dbnews

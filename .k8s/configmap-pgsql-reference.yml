@@ -1,0 +1,18 @@
+# Em casos de muitas configurações, talvez seja viável passar o configMap como referência nas especificações do Pod para facilitar e não poluir o manifesto com muitas refereências a variáveis,
+# Assim todo o conteúdo (key/values) serão injetados como as variáveis utilizadas pela aplicação, neste caso, as KEYS devem corresponder ao nome original de vars esperadas pela aplicação;  
+
+# envFrom:
+#   - configMapRef:
+#       name: postgres
+
+apiVersion: v1
+data:
+  POSTGRES_PASSWORD: passw0rd*2024
+  POSTGRES_USER: mgstec
+  POSTGRESS_DB: mgstec
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: dbnews
